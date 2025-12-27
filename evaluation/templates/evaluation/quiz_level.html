@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stage 2: {{ level|upper }} Evaluation</title>
+    <style>
+        :root { --green: #2E8B57; --orange: #FF8C00; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; }
+        .header { background: var(--orange); color: white; padding: 20px; text-align: center; }
+        .container { max-width: 800px; margin: 20px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .question { margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .btn-final { background: var(--green); color: white; border: none; padding: 15px; border-radius: 5px; cursor: pointer; font-size: 18px; width: 100%; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Stage 2: {{ level|upper }} Level Test</h1>
+        <p>This test determines your final preparedness for {{ subject.name }}</p>
+    </div>
+    <div class="container">
+        <form method="POST" action="{% url 'submit_level' subject.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="level" value="{{ level }}">
+            
+            {% for q in questions %}
+            <div class="question">
+                <p><strong>Q{{ forloop.counter }}:</strong> {{ q.question_text }} (Unit {{ q.unit_number }})</p>
+                <input type="radio" name="q_{{ q.id }}" value="A" required> {{ q.option_a }} <br>
+                <input type="radio" name="q_{{ q.id }}" value="B"> {{ q.option_b }} <br>
+                <input type="radio" name="q_{{ q.id }}" value="C"> {{ q.option_c }} <br>
+                <input type="radio" name="q_{{ q.id }}" value="D"> {{ q.option_d }}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn-final">Finish Assessment & See Results</button>
+        </form>
+    </div>
+</body>
+</html>
