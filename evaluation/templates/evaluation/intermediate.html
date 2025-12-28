@@ -1,0 +1,10 @@
+<div class="card" style="text-align: center; border: 2px solid var(--green); padding: 50px;">
+    <h2 style="color: var(--green);">Common Test Completed!</h2>
+    <div style="font-size: 3rem; color: var(--orange);">{{ score }} / 20</div>
+    <p style="font-size: 1.2rem; background: #eee; padding: 15px; border-radius: 10px;">{{ msg }}</p>
+    
+    <div style="margin-top: 30px;">
+        <a href="{% url 'preview_answers' subject.id %}" class="btn" style="background: grey;">Preview My Answers</a>
+        <a href="{% url 'start_level_test' subject.id next_level %}" class="btn">Continue to {{ next_level|upper }} Test →</a>
+    </div>
+</div>

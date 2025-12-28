@@ -3,21 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
+    <title>BCA Student Dashboard</title>
+    <!-- Adding Chart.js for the Analytics look -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --green: #2E8B57; --orange: #FF8C00; --bg: #f4f7f6; }
+        :root { --green: #2E8B57; --orange: #FF8C00; --bg: #f4f7f6; --red: #cc0000; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 0; }
         .navbar { background: var(--green); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         .container { padding: 2rem; max-width: 1000px; margin: auto; }
+        
+        /* Summary Card */
         .card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 2rem; }
         h1, h2 { color: var(--green); }
+        
+        .stats-box { display: flex; justify-content: space-around; background: #e9f5ee; padding: 1.5rem; border-radius: 8px; margin-top: 1rem; }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--orange); }
+        .stat-label { font-size: 0.9rem; color: #666; font-weight: bold; text-transform: uppercase; }
+
+        /* Weakness Card */
+        .weakness-card { border-left: 10px solid var(--red); background: #fff5f5; }
+        .weakness-list { margin-top: 10px; padding-left: 20px; }
+        .weakness-list li { margin-bottom: 8px; color: #444; }
+        .trend-badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+        .improving { background: #d4edda; color: #155724; }
+        .declining { background: #f8d7da; color: #721c24; }
+
+        /* Subjects */
         .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
         .subject-card { background: white; border-top: 5px solid var(--orange); padding: 1.5rem; border-radius: 8px; text-align: center; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .subject-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .btn { background: var(--orange); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 1rem; font-weight: bold; }
-        .stats-box { display: flex; justify-content: space-around; background: #e9f5ee; padding: 1rem; border-radius: 8px; margin-top: 1rem; }
-        .stat-item { text-align: center; }
-        .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--orange); }
+        
+        .btn { background: var(--orange); color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 1rem; font-weight: bold; }
+        .study-link { color: var(--green); font-weight: bold; text-decoration: none; font-size: 0.85rem; }
     </style>
 </head>
 <body>
@@ -28,34 +46,64 @@
 </div>
 
 <div class="container">
+    
+    <!-- 1. Summary Card -->
     <div class="card">
         <h1>Your Preparedness Summary</h1>
         <div class="stats-box">
             <div class="stat-item">
                 <div class="stat-value">{% if latest_attempt %}{{ latest_attempt.preparedness_score }}%{% else %}0%{% endif %}</div>
-                <div>Latest Preparedness</div>
+                <div class="stat-label">Latest Preparedness</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">{% if latest_attempt %}{{ latest_attempt.total_score }}/40{% else %}N/A{% endif %}</div>
-                <div>Last Score</div>
+                <div class="stat-value">{% if latest_attempt %}{{ latest_attempt.total_score }}{% else %}0{% endif %}/40</div>
+                <div class="stat-label">Last Score</div>
             </div>
             <div class="stat-item">
                 <div class="stat-value">{{ subjects.count }}</div>
-                <div>Subjects</div>
+                <div class="stat-label">Total Subjects</div>
             </div>
         </div>
     </div>
 
-    <h2>Select a Subject to Begin Evaluation</h2>
+    <!-- 2. Weakness & Trend Analysis (Placed Outside for space) -->
+    {% if latest_attempt %}
+    <div class="card weakness-card">
+        <h3 style="color: var(--red); margin-top: 0;">⚠️ Detailed Weakness Analysis</h3>
+        <p>Based on your last attempt in <b>{{ latest_attempt.subject.name }}</b>, you should focus on:</p>
+        <ul class="weakness-list">
+            {% for unit, score in latest_attempt.unit_breakdown.items %}
+                {% if score < 60 %}
+                    <li>
+                        <strong>Unit {{ unit }}:</strong> Your proficiency is only {{ score|floatformat:0 }}% 
+                        <br>
+                        <a href="https://www.google.com/search?q=BCA+TU+Syllabus+Unit+{{ unit }}+{{ latest_attempt.subject.name }}" target="_blank" class="study-link">🔍 Find TU Study Material</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <hr style="border: 0.5px solid #eee; margin: 1.5rem 0;">
+        <p>
+            <strong>Regression Trend:</strong> 
+            <span class="trend-badge {% if latest_attempt.trend == 'Improving' %}improving{% else %}declining{% endif %}">
+                {{ latest_attempt.trend }} ({% if latest_attempt.improvement_rate > 0 %}+{% endif %}{{ latest_attempt.improvement_rate }}%)
+            </span>
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- 3. Subject Grid -->
+    <h2 style="margin-top: 2rem;">Select a Subject for New Evaluation</h2>
     <div class="subject-grid">
         {% for subject in subjects %}
         <div class="subject-card">
             <h3>{{ subject.name }}</h3>
-            <p>6th Semester - TU Syllabus</p>
+            <p>TU BCA 6th Semester Syllabus</p>
             <a href="{% url 'start_common_test' subject.id %}" class="btn">Start Assessment</a>
         </div>
         {% endfor %}
     </div>
+
 </div>
 
 </body>
