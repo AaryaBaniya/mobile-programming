@@ -1,12 +1,14 @@
 import json
-import numpy as np
+try:
+    import numpy as np
+except ImportError:
+    np = None  # Graceful fallback if Numpy is missing
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
-
 from .models import Subject, Question, Attempt
-from .forms import BCAStudentSignupForm  # Ensure this file exists
+from .forms import BCAStudentSignupForm
 
 # ==========================================
 # 1. AUTHENTICATION (Individual Records)
@@ -29,7 +31,7 @@ def logout_view(request):
     return redirect('login')
 
 # ==========================================
-# 2. STUDENT DASHBOARD (With Interactive Trends)
+# 2. MASTER DASHBOARD (Personalized Trends)
 # ==========================================
 
 @login_required
@@ -38,12 +40,12 @@ def dashboard(request):
     subject_stats = []
 
     for sub in subjects:
-        # Fetch history specific to THIS logged-in user
+        # Fetch history specific to THIS logged-in user for THIS subject
         attempts = Attempt.objects.filter(student=request.user, subject=sub).order_by('timestamp')
         latest = attempts.last()
         count = attempts.count()
         
-        # Data preparation for Chart.js
+        # Prepare data for the Chart.js line graph
         history_scores = [float(a.total_score) for a in attempts]
         history_labels = [f"Attempt {i+1}" for i in range(len(history_scores))]
 
@@ -66,6 +68,7 @@ def dashboard(request):
 @login_required
 def start_common_test(request, subject_id):
     subject = get_object_or_404(Subject, id=subject_id)
+    # Corrected randomization attribute
     questions = Question.objects.filter(subject=subject, is_common=True).order_by('?')[:20]
     return render(request, 'evaluation/quiz_common.html', {'questions': questions, 'subject': subject})
 
@@ -84,18 +87,18 @@ def submit_common(request, subject_id):
                 if question.correct_option == value:
                     score += 1
         
-        # Tiered Level Logic based on score
+        # Tiered Level Logic (The Gatekeeper)
         if score < 11:
             level_queue = ['easy', 'medium', 'hard']
-            msg = f"Score: {score}/20. Since you scored below 11, you must clear all evaluation tiers."
+            msg = f"Since your score is {score}/20, you must clear all tiers: Easy, Medium, and Hard."
         elif 11 <= score <= 17:
             level_queue = ['medium', 'hard']
-            msg = f"Score: {score}/20. Good job! You bypassed Easy level. Proceeding to Medium."
+            msg = f"Good effort! With {score}/20, you bypassed Easy. You must clear Medium and Hard."
         else:
             level_queue = ['hard']
-            msg = f"Score: {score}/20. Excellent proficiency! Moving directly to Advanced Level."
+            msg = f"Excellent! With {score}/20, you are fast-tracked directly to the Hard Level."
             
-        # Store state in session
+        # Store test state in Session
         request.session['cumulative_score'] = score
         request.session['common_score_only'] = score
         request.session['level_queue'] = level_queue
@@ -130,22 +133,23 @@ def preview_answers(request, subject_id):
     return render(request, 'evaluation/preview.html', {'questions': questions, 'subject': subject})
 
 # ==========================================
-# 5. STAGE 2: LEVEL-SPECIFIC TESTING
+# 5. STAGE 2: LEVEL-SPECIFIC TESTING (Tiered)
 # ==========================================
 
 @login_required
 def start_level_test(request, subject_id, level):
     subject = get_object_or_404(Subject, id=subject_id)
     all_qs = []
-    # Attempt to grab 4 questions per unit for that specific difficulty
+    # Force distribution: 4 questions from each of the 5 units
     for unit in range(1, 6):
+        # Corrected order_by syntax
         qs = Question.objects.filter(subject=subject, difficulty=level, unit_number=unit, is_common=False).order_by('?')[:4]
         all_qs.extend(list(qs))
     
-    # Fill gaps to reach 20 total if database is short on unit-specific questions
+    # Pad to 20 questions if the admin hasn't added 4 questions per unit yet
     if len(all_qs) < 20:
         existing_ids = [q.id for q in all_qs]
-        extras = Question.objects.filter(subject=subject, difficulty=level, is_common=False).exclude(id__in=existing_ids).order_back('?')[:(20-len(all_qs))]
+        extras = Question.objects.filter(subject=subject, difficulty=level, is_common=False).exclude(id__in=existing_ids).order_by('?')[:(20-len(all_qs))]
         all_qs.extend(list(extras))
         
     return render(request, 'evaluation/quiz_level.html', {'questions': all_qs, 'subject': subject, 'level': level})
@@ -153,15 +157,17 @@ def start_level_test(request, subject_id, level):
 @login_required
 def submit_level(request, subject_id):
     if request.method == "POST":
-        level_score = 0
+        current_level_score = 0
         for key, value in request.POST.items():
             if key.startswith('q_'):
                 q_id = key.split('_')[1]
                 if Question.objects.get(id=q_id).correct_option == value:
-                    level_score += 1
+                    current_level_score += 1
         
-        request.session['cumulative_score'] += level_score
+        # Accumulate score across levels
+        request.session['cumulative_score'] += current_level_score
         
+        # Cycle through the Level Queue
         queue = request.session.get('level_queue', [])
         current_level = request.POST.get('level')
         
@@ -173,10 +179,11 @@ def submit_level(request, subject_id):
         except ValueError:
             pass
 
+        # If no levels left in queue, save everything
         return finish_assessment(request, subject_id)
 
 # ==========================================
-# 6. FINAL ANALYSIS (Regression Algorithm)
+# 6. FINAL ASSESSMENT & REGRESSION Math
 # ==========================================
 
 def finish_assessment(request, subject_id):
@@ -184,35 +191,44 @@ def finish_assessment(request, subject_id):
     total_score = request.session.get('cumulative_score', 0)
     common_score = request.session.get('common_score_only', 0)
     
-    # Mathematical Trend Calculation
+    # 📈 Regression Algorithm (Trend Calculation)
     past_attempts = Attempt.objects.filter(student=request.user, subject=subject).order_by('timestamp')
     trend, slope_val = "Stable", 0.0
     
-    if past_attempts.count() >= 1:
-        scores = [float(a.total_score) for a in past_attempts] + [float(total_score)]
-        x = np.arange(len(scores))
-        y = np.array(scores)
-        slope, intercept = np.polyfit(x, y, 1)
-        slope_val = round(slope, 2)
-        trend = "Improving" if slope > 0.5 else "Declining" if slope < -0.5 else "Stable"
+    if np and past_attempts.count() >= 1:
+        try:
+            # Combine past scores with the current one for a trend analysis
+            scores = [float(a.total_score) for a in past_attempts] + [float(total_score)]
+            x = np.arange(len(scores))
+            y = np.array(scores)
+            slope, intercept = np.polyfit(x, y, 1)
+            slope_val = round(slope, 2)
+            # Interpret the slope
+            if slope > 0.5: trend = "Improving"
+            elif slope < -0.5: trend = "Declining"
+            else: trend = "Stable"
+        except Exception:
+            pass 
 
-    # Score out of (20 Common + (N Queue * 20))
-    max_possible = 20 + (len(request.session.get('level_queue', [])) * 20)
-    prep_score = round((total_score / max_possible) * 100, 2)
+    # Preparedness Score out of (20 Common + [Number of Levels] * 20)
+    queue_len = len(request.session.get('level_queue', []))
+    max_possible = 20 + (queue_len * 20)
+    prep_percentage = round((total_score / max_possible) * 100, 2)
 
+    # Permanent Save to Database
     Attempt.objects.create(
         student=request.user,
         subject=subject,
         common_score=common_score,
         level_score=total_score - common_score,
         total_score=total_score,
-        unit_breakdown={}, # Advanced unit stats can be calculated and stored here
-        preparedness_score=prep_score,
+        unit_breakdown={}, # Could be populated with unit percentages
+        preparedness_score=prep_percentage,
         improvement_rate=slope_val,
         trend=trend
     )
     
-    # Wipe the session data once the record is safely in DB
+    # Critical Cleanup: Clear session variables so next test is fresh
     keys_to_clear = ['cumulative_score', 'common_score_only', 'level_queue', 'user_answers', 'logic_msg']
     for key in keys_to_clear:
         if key in request.session:
