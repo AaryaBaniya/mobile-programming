@@ -1,10 +1,133 @@
-<div class="card" style="text-align: center; border: 2px solid var(--green); padding: 50px;">
-    <h2 style="color: var(--green);">Common Test Completed!</h2>
-    <div style="font-size: 3rem; color: var(--orange);">{{ score }} / 20</div>
-    <p style="font-size: 1.2rem; background: #eee; padding: 15px; border-radius: 10px;">{{ msg }}</p>
-    
-    <div style="margin-top: 30px;">
-        <a href="{% url 'preview_answers' subject.id %}" class="btn" style="background: grey;">Preview My Answers</a>
-        <a href="{% url 'start_level_test' subject.id next_level %}" class="btn">Continue to {{ next_level|upper }} Test →</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stage 1 Results | BCA Prep</title>
+    <style>
+        :root { --green: #2E8B57; --orange: #FF8C00; --bg: #f0f2f5; --white: #ffffff; }
+        
+        body { font-family: 'Poppins', Segoe UI, sans-serif; background: var(--bg); margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
+
+        /* Main Container Card */
+        .result-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 550px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Header Branding */
+        .card-header { background: var(--green); color: white; padding: 30px; }
+        .card-header h2 { margin: 0; font-size: 1.8rem; letter-spacing: 1px; }
+
+        .content { padding: 40px; }
+
+        /* The Big Score Circle */
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid #eee;
+            border-top: 8px solid var(--orange); /* Decorative ring */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            background: #fffdfa;
+            box-shadow: 0 10px 20px rgba(255, 140, 0, 0.1);
+        }
+
+        .score-val { font-size: 3.2rem; font-weight: 800; color: var(--orange); line-height: 1; }
+        .score-total { font-size: 1.1rem; color: #888; font-weight: bold; }
+
+        /* Dynamic Feedback Message */
+        .logic-feedback {
+            background: #e9f5ee;
+            border-left: 5px solid var(--green);
+            padding: 20px;
+            border-radius: 10px;
+            color: #2c3e50;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 35px;
+            text-align: left;
+        }
+
+        /* Interaction Buttons */
+        .button-group { display: flex; gap: 15px; }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-preview {
+            background: white;
+            color: #666;
+            border: 2px solid #ddd;
+        }
+        .btn-preview:hover { background: #f9f9f9; border-color: #bbb; color: #333; }
+
+        .btn-continue {
+            background: var(--orange);
+            color: white;
+            border: none;
+            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.3);
+        }
+        .btn-continue:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 140, 0, 0.4); }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="result-card">
+        <div class="card-header">
+            <h2>Stage 1 Completed!</h2>
+        </div>
+
+        <div class="content">
+            <!-- Professional Score Visualization -->
+            <div class="score-circle">
+                <span class="score-val">{{ score }}</span>
+                <span class="score-total">/ 20</span>
+            </div>
+
+            <!-- Personalized Guidance Box -->
+            <div class="logic-feedback">
+                <strong style="color: var(--green);">Evaluation Insights:</strong><br>
+                {{ msg }}
+            </div>
+
+            <!-- Clear Action Buttons -->
+            <div class="button-group">
+                <a href="{% url 'preview_answers' subject.id %}" class="btn btn-preview">
+                    🔍 Review Answers
+                </a>
+                <a href="{% url 'start_level_test' subject.id next_level %}" class="btn btn-continue">
+                    Continue to {{ next_level|upper }} Test →
+                </a>
+            </div>
+        </div>
     </div>
-</div>
+
+</body>
+</html>

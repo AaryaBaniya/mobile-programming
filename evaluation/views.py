@@ -1,27 +1,75 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Subject, Question, Attempt
-import numpy as np
 import json
+import numpy as np
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
+
+from .models import Subject, Question, Attempt
+from .forms import BCAStudentSignupForm  # Ensure this file exists
 
 # ==========================================
-# 1. MAIN DASHBOARD
+# 1. AUTHENTICATION (Individual Records)
 # ==========================================
+
+def signup_view(request):
+    if request.method == "POST":
+        form = BCAStudentSignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('dashboard')
+    else:
+        form = BCAStudentSignupForm()
+    return render(request, 'registration/signup.html', {'form': form})
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+# ==========================================
+# 2. STUDENT DASHBOARD (With Interactive Trends)
+# ==========================================
+
+@login_required
 def dashboard(request):
     subjects = Subject.objects.all()
-    latest_attempt = Attempt.objects.filter(student=request.user).order_by('-timestamp').first()
+    subject_stats = []
+
+    for sub in subjects:
+        # Fetch history specific to THIS logged-in user
+        attempts = Attempt.objects.filter(student=request.user, subject=sub).order_by('timestamp')
+        latest = attempts.last()
+        count = attempts.count()
+        
+        # Data preparation for Chart.js
+        history_scores = [float(a.total_score) for a in attempts]
+        history_labels = [f"Attempt {i+1}" for i in range(len(history_scores))]
+
+        subject_stats.append({
+            'info': sub,
+            'latest': latest,
+            'count': count,
+            'chart_scores': json.dumps(history_scores),
+            'chart_labels': json.dumps(history_labels),
+        })
+
     return render(request, 'evaluation/dashboard.html', {
-        'subjects': subjects,
-        'latest_attempt': latest_attempt
+        'subject_stats': subject_stats,
     })
 
 # ==========================================
-# 2. STAGE 1: COMMON EVALUATION
+# 3. STAGE 1: COMMON EVALUATION (20 Qs)
 # ==========================================
+
+@login_required
 def start_common_test(request, subject_id):
     subject = get_object_or_404(Subject, id=subject_id)
     questions = Question.objects.filter(subject=subject, is_common=True).order_by('?')[:20]
     return render(request, 'evaluation/quiz_common.html', {'questions': questions, 'subject': subject})
 
+@login_required
 def submit_common(request, subject_id):
     if request.method == "POST":
         subject = get_object_or_404(Subject, id=subject_id)
@@ -36,18 +84,18 @@ def submit_common(request, subject_id):
                 if question.correct_option == value:
                     score += 1
         
-        # Assignment Logic
+        # Tiered Level Logic based on score
         if score < 11:
             level_queue = ['easy', 'medium', 'hard']
-            msg = f"Score: {score}/20. You need to clear all levels starting from Easy."
+            msg = f"Score: {score}/20. Since you scored below 11, you must clear all evaluation tiers."
         elif 11 <= score <= 17:
             level_queue = ['medium', 'hard']
-            msg = f"Score: {score}/20. You have bypassed Easy and start from Medium."
+            msg = f"Score: {score}/20. Good job! You bypassed Easy level. Proceeding to Medium."
         else:
             level_queue = ['hard']
-            msg = f"Score: {score}/20. You are fast-tracked directly to the Hard Level."
+            msg = f"Score: {score}/20. Excellent proficiency! Moving directly to Advanced Level."
             
-        # Store State in Session
+        # Store state in session
         request.session['cumulative_score'] = score
         request.session['common_score_only'] = score
         request.session['level_queue'] = level_queue
@@ -57,17 +105,21 @@ def submit_common(request, subject_id):
         return redirect('intermediate_results', subject_id=subject.id)
 
 # ==========================================
-# 3. INTERMEDIATE & REVIEW PAGES
+# 4. REVIEW & INTERMEDIATE FEEDBACK
 # ==========================================
+
+@login_required
 def intermediate_results(request, subject_id):
     subject = get_object_or_404(Subject, id=subject_id)
+    queue = request.session.get('level_queue', [])
     return render(request, 'evaluation/intermediate.html', {
         'subject': subject,
         'score': request.session.get('common_score_only'),
         'msg': request.session.get('logic_msg'),
-        'next_level': request.session.get('level_queue')[0]
+        'next_level': queue[0] if queue else None
     })
 
+@login_required
 def preview_answers(request, subject_id):
     subject = get_object_or_404(Subject, id=subject_id)
     user_answers = request.session.get('user_answers', {})
@@ -78,84 +130,92 @@ def preview_answers(request, subject_id):
     return render(request, 'evaluation/preview.html', {'questions': questions, 'subject': subject})
 
 # ==========================================
-# 4. STAGE 2: TIERED LEVEL TESTS
+# 5. STAGE 2: LEVEL-SPECIFIC TESTING
 # ==========================================
+
+@login_required
 def start_level_test(request, subject_id, level):
     subject = get_object_or_404(Subject, id=subject_id)
     all_qs = []
+    # Attempt to grab 4 questions per unit for that specific difficulty
     for unit in range(1, 6):
         qs = Question.objects.filter(subject=subject, difficulty=level, unit_number=unit, is_common=False).order_by('?')[:4]
         all_qs.extend(list(qs))
     
-    # Fill remaining to ensure exactly 20 Qs
+    # Fill gaps to reach 20 total if database is short on unit-specific questions
     if len(all_qs) < 20:
         existing_ids = [q.id for q in all_qs]
-        remaining = 20 - len(all_qs)
-        extras = Question.objects.filter(subject=subject, difficulty=level, is_common=False).exclude(id__in=existing_ids).order_by('?')[:remaining]
+        extras = Question.objects.filter(subject=subject, difficulty=level, is_common=False).exclude(id__in=existing_ids).order_back('?')[:(20-len(all_qs))]
         all_qs.extend(list(extras))
         
     return render(request, 'evaluation/quiz_level.html', {'questions': all_qs, 'subject': subject, 'level': level})
 
+@login_required
 def submit_level(request, subject_id):
     if request.method == "POST":
-        current_level_score = 0
-        # Tracks unit performance for the current test
+        level_score = 0
         for key, value in request.POST.items():
             if key.startswith('q_'):
                 q_id = key.split('_')[1]
                 if Question.objects.get(id=q_id).correct_option == value:
-                    current_level_score += 1
+                    level_score += 1
         
-        # Add to cumulative score
-        request.session['cumulative_score'] += current_level_score
+        request.session['cumulative_score'] += level_score
         
-        # Determine if we move to next level or finish
         queue = request.session.get('level_queue', [])
         current_level = request.POST.get('level')
+        
         try:
             current_index = queue.index(current_level)
             if current_index + 1 < len(queue):
                 next_level = queue[current_index + 1]
                 return redirect('start_level_test', subject_id=subject_id, level=next_level)
-        except ValueError: pass
+        except ValueError:
+            pass
 
         return finish_assessment(request, subject_id)
 
 # ==========================================
-# 5. FINAL: REGRESSION & DATABASE SAVE
+# 6. FINAL ANALYSIS (Regression Algorithm)
 # ==========================================
+
 def finish_assessment(request, subject_id):
     subject = get_object_or_404(Subject, id=subject_id)
     total_score = request.session.get('cumulative_score', 0)
     common_score = request.session.get('common_score_only', 0)
     
-    # Calculate Max Possible Questions (Common 20 + 20 per Level taken)
-    max_qs = 20 + (len(request.session.get('level_queue', [])) * 20)
-    prep_percentage = round((total_score / max_qs) * 100, 2)
-
-    # Simple Linear Regression for Trend
+    # Mathematical Trend Calculation
     past_attempts = Attempt.objects.filter(student=request.user, subject=subject).order_by('timestamp')
-    trend, improvement = "Stable", 0.0
+    trend, slope_val = "Stable", 0.0
+    
     if past_attempts.count() >= 1:
         scores = [float(a.total_score) for a in past_attempts] + [float(total_score)]
         x = np.arange(len(scores))
         y = np.array(scores)
         slope, intercept = np.polyfit(x, y, 1)
-        improvement = round(slope, 2)
+        slope_val = round(slope, 2)
         trend = "Improving" if slope > 0.5 else "Declining" if slope < -0.5 else "Stable"
 
-    # Save to Database
+    # Score out of (20 Common + (N Queue * 20))
+    max_possible = 20 + (len(request.session.get('level_queue', [])) * 20)
+    prep_score = round((total_score / max_possible) * 100, 2)
+
     Attempt.objects.create(
         student=request.user,
         subject=subject,
         common_score=common_score,
         level_score=total_score - common_score,
         total_score=total_score,
-        unit_breakdown={}, # Advanced: Could store JSON unit stats here
-        preparedness_score=prep_percentage,
-        improvement_rate=improvement,
+        unit_breakdown={}, # Advanced unit stats can be calculated and stored here
+        preparedness_score=prep_score,
+        improvement_rate=slope_val,
         trend=trend
     )
     
-    # Final cleanup of session
+    # Wipe the session data once the record is safely in DB
+    keys_to_clear = ['cumulative_score', 'common_score_only', 'level_queue', 'user_answers', 'logic_msg']
+    for key in keys_to_clear:
+        if key in request.session:
+            del request.session[key]
+            
     return redirect('dashboard')

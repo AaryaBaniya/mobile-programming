@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 28, 2025 at 02:06 PM
+-- Generation Time: Dec 31, 2025 at 04:59 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -124,7 +124,9 @@ CREATE TABLE `auth_user` (
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$1200000$OLuSu6Wnw31iyK5xlnDOJ9$eMiaO0ZOsOMEzs9UFYnHzDIh019/THpm5h7K6nUsNug=', '2025-12-26 08:20:54.390169', 1, 'admin', '', '', '', 1, 1, '2025-12-23 14:40:36.744552');
+(1, 'pbkdf2_sha256$600000$I3AE9AIlJSagjRQNWG6AsK$lhUu/cFPZmHaDKY0izF6w3yqeF0frSLxaXnL1ulp/LE=', '2025-12-31 15:47:06.025205', 1, 'admin', '', '', '', 1, 1, '2025-12-23 14:40:36.744552'),
+(2, 'pbkdf2_sha256$600000$lvqs9P6b789lU3wqPwnnmH$Y+YtBrGKl/qrt8pNQWGgik087I/6wxkMvoaN7ZAPv1c=', '2025-12-31 15:32:39.075223', 0, 'aaryabaniya12@gmail.com', '', '', '', 0, 1, '2025-12-31 15:32:37.722154'),
+(3, 'pbkdf2_sha256$600000$nN24jK2YpcBXDRFf5tBLib$fT0Jx2Js8x9y7GPJ1jZaM/ZE2ps+UUrBGJDEaV4c4/Y=', '2025-12-31 15:49:10.501226', 0, 'Aarya', 'Aarya Baniya', '', 'aaryabaniya12@gmail.com', 0, 1, '2025-12-31 15:49:09.236398');
 
 -- --------------------------------------------------------
 
@@ -350,8 +352,8 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
-('9dcdc96ne6v4howvu7fmk5sy5a2i0rpn', '.eJxVjDEOgzAMAP_iuYrikATC2L1vQI5tGtoKJAJT1b9XSAztene6Nwy0b2XYq67DJNADwuWXZeKnzoeQB833xfAyb-uUzZGY01ZzW0Rf17P9GxSqBXpovaJjJYcxB-tdF9SydV1O0jUuekESS56djexbGkkih9SMqEkQI8HnC9G-N7Q:1vY3rU:SqYv9XTlJzA8EEDa1VIEvmeBvd0XXDiwxoXkzqwoGXs', '2026-01-06 14:59:44.586988'),
-('wv5swc7eymcg1nxupfz1f407r3p638qj', '.eJxVj19PgzAUxb9Kc54JjkIn9G1TH33yyRhDLu3dhhYaKcwsi9_dlDnUt5Pz53fbM2qaxkM9BR7q1kIjQ_LXa8i8cx8D-0b93qfG9-PQNmmspD9pSB-9Zbf96f4DHCgc4jrnSsoyV4WqpCmZKlvKsqpIVlnDppTryirOcmN3NmMyGTcN5bKR-S1lhYlQ47vO93UwfmDoVQIzdZOjsT3y1ZT5_1rte3eCVgkcH9nVHxNPDP0CpnBCgo5tO3VIcKDB4jWB8_vW1F3YQ-MpErRQN3KVimc_iZ7ZitEL45gGQc6JmRpEGGkY234vdoPvxAOFU4oE8_epD588BOgzpLqFxgYJZJFBYxuVKq6qyKFxPysFjbtZxXT21OraWy9KLZRifV2oSLmkctlWi1cu5OhdFvHahbIsit_e8mYVb2zw9fUNLm-e9Q:1vZqPr:2neph2vFQ8ILmmq8m1QR7Cx7_CvwcbUcPbpsoW1UHBI', '2026-01-11 13:02:35.621438');
+('5hogpujmms6yxzr9hyufgdx82wy4t9je', '.eJxVj8FuwyAQRH8F7Rm5DgYbc2uaa085VpVFYBO7xUY1JlEU5d8r7MRqb6OZncdwg0bHqW1iwLHpLCgogP71Dtp845AC-6WHk8-MH6axO2TpJHukIXv3Ft32cfsP0OrQggImpRE5r8VRHjkzueB4rArLSsHyQuqCCcuF5AxZuTmikGirXNRc1AZrrCsGFEzso9NTd8YmGD8iKEnB-L73w2I0fnDX2XV4Rtf8RIwI6gNQhytQ6NF2sQcKrR4tfFJw_tSZpg8nULBPBEXkC8szsu8Gg-TqI5nBlhzQ-QvZbOhs9jFMxDjUI9HOETxrF_XU-YFMHY4hAwrz3_UQLjgGUDdggoGCV6DARL6qChRsk-LyqUS9qvJ5xzerKtYuXz2xUhLvbU4Tbzd7K0Wk7pKmxpImytwt06rZE-m1JU1bFpXW7-B-_wVnA5xz:1vayVM:mXfiZWlSwea2FDGqIjsTRTFnFIxhV5-k9gjyd2Nesmk', '2026-01-14 15:52:56.947487'),
+('9dcdc96ne6v4howvu7fmk5sy5a2i0rpn', '.eJxVjDEOgzAMAP_iuYrikATC2L1vQI5tGtoKJAJT1b9XSAztene6Nwy0b2XYq67DJNADwuWXZeKnzoeQB833xfAyb-uUzZGY01ZzW0Rf17P9GxSqBXpovaJjJYcxB-tdF9SydV1O0jUuekESS56djexbGkkih9SMqEkQI8HnC9G-N7Q:1vY3rU:SqYv9XTlJzA8EEDa1VIEvmeBvd0XXDiwxoXkzqwoGXs', '2026-01-06 14:59:44.586988');
 
 -- --------------------------------------------------------
 
@@ -968,7 +970,7 @@ ALTER TABLE `auth_permission`
 -- AUTO_INCREMENT for table `auth_user`
 --
 ALTER TABLE `auth_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `auth_user_groups`

@@ -1,0 +1,31 @@
+<!-- registration/login.html -->
+<style>
+    body { font-family: sans-serif; background: #f4f7f6; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+    .auth-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); width: 350px; border-top: 8px solid #2E8B57; }
+    h2 { color: #2E8B57; text-align: center; }
+    input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+    .btn { background: #FF8C00; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    .links { text-align: center; margin-top: 15px; font-size: 0.9rem; }
+</style>
+
+<div class="auth-card">
+    <h2>Student Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div style="text-align: left;">
+            <p>
+                <label>Username:</label><br>
+                {{ form.username }}
+            </p>
+            <p>
+                <label>Password:</label><br>
+                {{ form.password }}
+            </p>
+        </div>
+        <button type="submit" class="btn">Sign In to My Dashboard</button>
+    </form>
+    <div class="links">
+        Don't have an individual record? <br>
+        <a href="{% url 'signup' %}" style="color: #FF8C00; font-weight: bold;">Create Individual Account</a>
+    </div>
+</div>
