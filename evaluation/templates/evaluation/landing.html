@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BCA Evaluation System</title>
+    <style>
+        :root { --green: #2E8B57; --orange: #FF8C00; }
+        body { font-family: 'Segoe UI', sans-serif; margin:0; text-align: center; background: #fcfcfc; }
+        .hero { background: linear-gradient(135deg, var(--green) 0%, #1e5c39 100%); color: white; padding: 120px 20px; }
+        .logo-box { background: var(--orange); display: inline-block; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-bottom: 20px; }
+        .container { max-width: 900px; margin: auto; padding: 60px 20px; }
+        .btn { padding: 18px 45px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; transition: 0.3s; font-size: 1.1rem; }
+        .btn-prime { background: var(--orange); color: white; box-shadow: 0 10px 20px rgba(255,140,0,0.3); }
+        .btn-prime:hover { transform: translateY(-3px); }
+        .step-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 50px; }
+        .step { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-bottom: 5px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="logo-box">BCA SEM VI</div>
+        <h1 style="font-size: 3rem;">Student Preparedness Evaluation</h1>
+        <p style="font-size: 1.2rem; opacity: 0.9;">Analyze your syllabus mastery through tiered testing and progress regression.</p>
+        <br>
+        <a href="{% url 'login' %}" class="btn btn-prime">Sign In to Dashboard</a>
+    </div>
+    <div class="container">
+        <div class="step-grid">
+            <div class="step"><h3>Diagnostic</h3>Initial 20 questions to find your baseline.</div>
+            <div class="step"><h3>Tiered Quiz</h3>Questions specifically adapted to your level.</div>
+            <div class="step"><h3>Analytics</h3>Numpy-powered regression to show actual growth.</div>
+        </div>
+    </div>
+</body>
+</html>

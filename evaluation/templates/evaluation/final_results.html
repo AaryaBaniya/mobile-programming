@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Final Results | BCA Prep</title>
+    <style>
+        :root { --green: #2E8B57; --orange: #FF8C00; --white: #fff; }
+        body { font-family: 'Poppins', sans-serif; background: #f0f2f5; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .res-card { background: var(--white); padding: 40px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 600px; border-bottom: 8px solid var(--orange); }
+        .status-badge { background: #e9f5ee; color: var(--green); padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+        .main-score { font-size: 4rem; font-weight: 800; color: var(--orange); margin: 20px 0; }
+        .score-sub { color: #888; font-size: 1.2rem; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 30px 0; }
+        .stat-item { background: #f9f9f9; padding: 15px; border-radius: 10px; }
+        .stat-val { display: block; font-weight: bold; font-size: 1.2rem; color: #333; }
+        .stat-lab { font-size: 0.75rem; color: #999; text-transform: uppercase; }
+        .btn-group { display: flex; gap: 15px; }
+        .btn { flex: 1; padding: 15px; border-radius: 10px; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .btn-preview { background: var(--green); color: white; }
+        .btn-dash { background: white; color: #666; border: 2px solid #ddd; }
+        .btn:hover { opacity: 0.9; transform: translateY(-3px); }
+    </style>
+</head>
+<body>
+
+<div class="res-card">
+    <span class="status-badge">Evaluation Complete</span>
+    <h2>Excellent effort, {{ user.username }}!</h2>
+    <p>You have finished the tiered assessment for <strong>{{ attempt.subject.name }}</strong>.</p>
+
+    <div class="main-score">
+        {{ attempt.total_score }} <span style="font-size: 1.5rem; color:#ccc;">/ 40</span>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-item">
+            <span class="stat-val">{{ attempt.preparedness_score }}%</span>
+            <span class="stat-lab">Preparedness</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-val">{{ attempt.trend }}</span>
+            <span class="stat-lab">Performance Trend</span>
+        </div>
+    </div>
+
+    <div class="btn-group">
+        <a href="{% url 'preview_answers' attempt.subject.id %}" class="btn btn-preview">📑 Review All Stage Answers</a>
+        <a href="{% url 'dashboard' %}" class="btn btn-dash">Go to Dashboard</a>
+    </div>
+</div>
+
+</body>
+</html>

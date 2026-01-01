@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 31, 2025 at 04:59 PM
+-- Generation Time: Jan 01, 2026 at 02:14 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -124,9 +124,9 @@ CREATE TABLE `auth_user` (
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$600000$I3AE9AIlJSagjRQNWG6AsK$lhUu/cFPZmHaDKY0izF6w3yqeF0frSLxaXnL1ulp/LE=', '2025-12-31 15:47:06.025205', 1, 'admin', '', '', '', 1, 1, '2025-12-23 14:40:36.744552'),
+(1, 'pbkdf2_sha256$600000$I3AE9AIlJSagjRQNWG6AsK$lhUu/cFPZmHaDKY0izF6w3yqeF0frSLxaXnL1ulp/LE=', '2026-01-01 12:09:22.843728', 1, 'admin', '', '', '', 1, 1, '2025-12-23 14:40:36.744552'),
 (2, 'pbkdf2_sha256$600000$lvqs9P6b789lU3wqPwnnmH$Y+YtBrGKl/qrt8pNQWGgik087I/6wxkMvoaN7ZAPv1c=', '2025-12-31 15:32:39.075223', 0, 'aaryabaniya12@gmail.com', '', '', '', 0, 1, '2025-12-31 15:32:37.722154'),
-(3, 'pbkdf2_sha256$600000$nN24jK2YpcBXDRFf5tBLib$fT0Jx2Js8x9y7GPJ1jZaM/ZE2ps+UUrBGJDEaV4c4/Y=', '2025-12-31 15:49:10.501226', 0, 'Aarya', 'Aarya Baniya', '', 'aaryabaniya12@gmail.com', 0, 1, '2025-12-31 15:49:09.236398');
+(3, 'pbkdf2_sha256$600000$nN24jK2YpcBXDRFf5tBLib$fT0Jx2Js8x9y7GPJ1jZaM/ZE2ps+UUrBGJDEaV4c4/Y=', '2026-01-01 12:49:59.238745', 0, 'Aarya', 'Aarya Baniya', '', 'aaryabaniya12@gmail.com', 0, 1, '2025-12-31 15:49:09.236398');
 
 -- --------------------------------------------------------
 
@@ -352,7 +352,6 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
-('5hogpujmms6yxzr9hyufgdx82wy4t9je', '.eJxVj8FuwyAQRH8F7Rm5DgYbc2uaa085VpVFYBO7xUY1JlEU5d8r7MRqb6OZncdwg0bHqW1iwLHpLCgogP71Dtp845AC-6WHk8-MH6axO2TpJHukIXv3Ft32cfsP0OrQggImpRE5r8VRHjkzueB4rArLSsHyQuqCCcuF5AxZuTmikGirXNRc1AZrrCsGFEzso9NTd8YmGD8iKEnB-L73w2I0fnDX2XV4Rtf8RIwI6gNQhytQ6NF2sQcKrR4tfFJw_tSZpg8nULBPBEXkC8szsu8Gg-TqI5nBlhzQ-QvZbOhs9jFMxDjUI9HOETxrF_XU-YFMHY4hAwrz3_UQLjgGUDdggoGCV6DARL6qChRsk-LyqUS9qvJ5xzerKtYuXz2xUhLvbU4Tbzd7K0Wk7pKmxpImytwt06rZE-m1JU1bFpXW7-B-_wVnA5xz:1vayVM:mXfiZWlSwea2FDGqIjsTRTFnFIxhV5-k9gjyd2Nesmk', '2026-01-14 15:52:56.947487'),
 ('9dcdc96ne6v4howvu7fmk5sy5a2i0rpn', '.eJxVjDEOgzAMAP_iuYrikATC2L1vQI5tGtoKJAJT1b9XSAztene6Nwy0b2XYq67DJNADwuWXZeKnzoeQB833xfAyb-uUzZGY01ZzW0Rf17P9GxSqBXpovaJjJYcxB-tdF9SydV1O0jUuekESS56djexbGkkih9SMqEkQI8HnC9G-N7Q:1vY3rU:SqYv9XTlJzA8EEDa1VIEvmeBvd0XXDiwxoXkzqwoGXs', '2026-01-06 14:59:44.586988');
 
 -- --------------------------------------------------------
@@ -395,7 +394,11 @@ INSERT INTO `evaluation_attempt` (`id`, `common_score`, `level_score`, `total_sc
 (13, 0, 0, 0, '{}', 0, 0, 'Stable', '2025-12-28 10:41:09.993623', 1, 1),
 (14, 0, 0, 0, '{}', 0, 0, 'Stable', '2025-12-28 10:41:21.331687', 1, 1),
 (15, 5, 5, 10, '{}', 12.5, 0, 'Stable', '2025-12-28 10:49:43.998652', 1, 4),
-(16, 5, 18, 23, '{}', 28.75, 4.6, 'Improving', '2025-12-28 13:02:35.615715', 1, 1);
+(16, 5, 18, 23, '{}', 28.75, 4.6, 'Improving', '2025-12-28 13:02:35.615715', 1, 1),
+(17, 8, 9, 17, '{}', 21.25, 0, 'Stable', '2025-12-31 16:36:01.008454', 3, 1),
+(18, 6, 11, 17, '{\"1\": 28.6, \"2\": 5.9, \"3\": 33.3, \"4\": 10.0, \"5\": 20.0, \"6\": 0.0, \"7\": 41.7, \"8\": 14.3}', 21.25, 0, 'Stable', '2026-01-01 11:24:09.691028', 3, 2),
+(19, 4, 8, 12, '{\"1\": 13.3, \"2\": 27.3, \"3\": 10.0, \"4\": 8.3, \"5\": 12.5, \"6\": 16.7}', 15, 0, 'Stable', '2026-01-01 13:08:06.204561', 3, 3),
+(20, 4, 7, 11, '{\"1\": 6.7, \"2\": 27.3, \"3\": 10.0, \"4\": 16.7, \"5\": 12.5, \"6\": 12.5}', 13.75, -1, 'Declining', '2026-01-01 13:13:29.958719', 3, 3);
 
 -- --------------------------------------------------------
 
@@ -1006,7 +1009,7 @@ ALTER TABLE `django_migrations`
 -- AUTO_INCREMENT for table `evaluation_attempt`
 --
 ALTER TABLE `evaluation_attempt`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `evaluation_question`
