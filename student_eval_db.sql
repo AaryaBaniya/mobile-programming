@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 01, 2026 at 02:14 PM
+-- Generation Time: Jan 18, 2026 at 03:50 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -124,9 +124,10 @@ CREATE TABLE `auth_user` (
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$600000$I3AE9AIlJSagjRQNWG6AsK$lhUu/cFPZmHaDKY0izF6w3yqeF0frSLxaXnL1ulp/LE=', '2026-01-01 12:09:22.843728', 1, 'admin', '', '', '', 1, 1, '2025-12-23 14:40:36.744552'),
+(1, 'pbkdf2_sha256$600000$I3AE9AIlJSagjRQNWG6AsK$lhUu/cFPZmHaDKY0izF6w3yqeF0frSLxaXnL1ulp/LE=', '2026-01-08 11:57:24.690237', 1, 'admin', '', '', '', 1, 1, '2025-12-23 14:40:36.744552'),
 (2, 'pbkdf2_sha256$600000$lvqs9P6b789lU3wqPwnnmH$Y+YtBrGKl/qrt8pNQWGgik087I/6wxkMvoaN7ZAPv1c=', '2025-12-31 15:32:39.075223', 0, 'aaryabaniya12@gmail.com', '', '', '', 0, 1, '2025-12-31 15:32:37.722154'),
-(3, 'pbkdf2_sha256$600000$nN24jK2YpcBXDRFf5tBLib$fT0Jx2Js8x9y7GPJ1jZaM/ZE2ps+UUrBGJDEaV4c4/Y=', '2026-01-01 12:49:59.238745', 0, 'Aarya', 'Aarya Baniya', '', 'aaryabaniya12@gmail.com', 0, 1, '2025-12-31 15:49:09.236398');
+(3, 'pbkdf2_sha256$600000$nN24jK2YpcBXDRFf5tBLib$fT0Jx2Js8x9y7GPJ1jZaM/ZE2ps+UUrBGJDEaV4c4/Y=', '2026-01-18 12:03:01.813457', 0, 'Aarya', 'Aarya Baniya', '', 'aaryabaniya12@gmail.com', 0, 1, '2025-12-31 15:49:09.236398'),
+(4, 'pbkdf2_sha256$600000$wm0icCg1SXKAcE9JQh6kPp$tGfoB12FNmDbUbo+x4P9VLfvPgHi/av5OnPd9c4rucw=', '2026-01-04 04:30:47.209205', 0, 'Tenzin', 'Tenzin Palki', '', 'tenzinpalki12@gmail.com', 0, 1, '2026-01-04 04:30:45.851006');
 
 -- --------------------------------------------------------
 
@@ -333,7 +334,8 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (16, 'auth', '0011_update_proxy_permissions', '2025-12-23 14:39:11.125770'),
 (17, 'auth', '0012_alter_user_first_name_max_length', '2025-12-23 14:39:11.150638'),
 (18, 'evaluation', '0001_initial', '2025-12-23 14:39:11.544004'),
-(19, 'sessions', '0001_initial', '2025-12-23 14:39:11.606823');
+(19, 'sessions', '0001_initial', '2025-12-23 14:39:11.606823'),
+(20, 'evaluation', '0002_remove_attempt_common_score_and_more', '2026-01-08 11:55:32.311463');
 
 -- --------------------------------------------------------
 
@@ -362,8 +364,6 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 
 CREATE TABLE `evaluation_attempt` (
   `id` bigint(20) NOT NULL,
-  `common_score` int(11) NOT NULL,
-  `level_score` int(11) NOT NULL,
   `total_score` int(11) NOT NULL,
   `unit_breakdown` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`unit_breakdown`)),
   `preparedness_score` double NOT NULL,
@@ -371,34 +371,47 @@ CREATE TABLE `evaluation_attempt` (
   `trend` varchar(20) NOT NULL,
   `timestamp` datetime(6) NOT NULL,
   `student_id` int(11) NOT NULL,
-  `subject_id` bigint(20) NOT NULL
+  `subject_id` bigint(20) NOT NULL,
+  `time_taken` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `evaluation_attempt`
 --
 
-INSERT INTO `evaluation_attempt` (`id`, `common_score`, `level_score`, `total_score`, `unit_breakdown`, `preparedness_score`, `improvement_rate`, `trend`, `timestamp`, `student_id`, `subject_id`) VALUES
-(1, 0, 0, 0, '{\"1\": 0.0}', 0, 0, 'Stable', '2025-12-27 14:39:10.266474', 1, 1),
-(2, 0, 0, 0, '{\"1\": 0.0, \"2\": 0.0}', 0, 0, 'Stable', '2025-12-27 16:11:28.933483', 1, 2),
-(3, 0, 0, 0, '{\"1\": 0.0, \"2\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:28:58.971539', 1, 6),
-(4, 0, 0, 0, '{\"1\": 0.0, \"2\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:30:06.657596', 1, 3),
-(5, 0, 0, 0, '{\"2\": 0.0, \"1\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:32:52.327547', 1, 3),
-(6, 0, 0, 0, '{\"1\": 0.0, \"2\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:33:13.871855', 1, 2),
-(7, 0, 0, 0, '{\"2\": 0.0, \"1\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:33:37.959125', 1, 2),
-(8, 0, 0, 0, '{\"2\": 0.0, \"1\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:34:02.467638', 1, 6),
-(9, 0, 0, 0, '{\"2\": 0.0, \"1\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:50:38.749131', 1, 1),
-(10, 0, 0, 0, '{\"1\": 0.0, \"2\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:51:25.519754', 1, 2),
-(11, 0, 0, 0, '{\"2\": 0.0, \"1\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:51:49.598103', 1, 2),
-(12, 0, 0, 0, '{\"2\": 0.0, \"1\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:59:39.002521', 1, 2),
-(13, 0, 0, 0, '{}', 0, 0, 'Stable', '2025-12-28 10:41:09.993623', 1, 1),
-(14, 0, 0, 0, '{}', 0, 0, 'Stable', '2025-12-28 10:41:21.331687', 1, 1),
-(15, 5, 5, 10, '{}', 12.5, 0, 'Stable', '2025-12-28 10:49:43.998652', 1, 4),
-(16, 5, 18, 23, '{}', 28.75, 4.6, 'Improving', '2025-12-28 13:02:35.615715', 1, 1),
-(17, 8, 9, 17, '{}', 21.25, 0, 'Stable', '2025-12-31 16:36:01.008454', 3, 1),
-(18, 6, 11, 17, '{\"1\": 28.6, \"2\": 5.9, \"3\": 33.3, \"4\": 10.0, \"5\": 20.0, \"6\": 0.0, \"7\": 41.7, \"8\": 14.3}', 21.25, 0, 'Stable', '2026-01-01 11:24:09.691028', 3, 2),
-(19, 4, 8, 12, '{\"1\": 13.3, \"2\": 27.3, \"3\": 10.0, \"4\": 8.3, \"5\": 12.5, \"6\": 16.7}', 15, 0, 'Stable', '2026-01-01 13:08:06.204561', 3, 3),
-(20, 4, 7, 11, '{\"1\": 6.7, \"2\": 27.3, \"3\": 10.0, \"4\": 16.7, \"5\": 12.5, \"6\": 12.5}', 13.75, -1, 'Declining', '2026-01-01 13:13:29.958719', 3, 3);
+INSERT INTO `evaluation_attempt` (`id`, `total_score`, `unit_breakdown`, `preparedness_score`, `improvement_rate`, `trend`, `timestamp`, `student_id`, `subject_id`, `time_taken`) VALUES
+(1, 0, '{\"1\": 0.0}', 0, 0, 'Stable', '2025-12-27 14:39:10.266474', 1, 1, 0),
+(2, 0, '{\"1\": 0.0, \"2\": 0.0}', 0, 0, 'Stable', '2025-12-27 16:11:28.933483', 1, 2, 0),
+(3, 0, '{\"1\": 0.0, \"2\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:28:58.971539', 1, 6, 0),
+(4, 0, '{\"1\": 0.0, \"2\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:30:06.657596', 1, 3, 0),
+(5, 0, '{\"2\": 0.0, \"1\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:32:52.327547', 1, 3, 0),
+(6, 0, '{\"1\": 0.0, \"2\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:33:13.871855', 1, 2, 0),
+(7, 0, '{\"2\": 0.0, \"1\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:33:37.959125', 1, 2, 0),
+(8, 0, '{\"2\": 0.0, \"1\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:34:02.467638', 1, 6, 0),
+(9, 0, '{\"2\": 0.0, \"1\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:50:38.749131', 1, 1, 0),
+(10, 0, '{\"1\": 0.0, \"2\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:51:25.519754', 1, 2, 0),
+(11, 0, '{\"2\": 0.0, \"1\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:51:49.598103', 1, 2, 0),
+(12, 0, '{\"2\": 0.0, \"1\": 0.0}', 0, 0, 'Stable', '2025-12-28 09:59:39.002521', 1, 2, 0),
+(13, 0, '{}', 0, 0, 'Stable', '2025-12-28 10:41:09.993623', 1, 1, 0),
+(14, 0, '{}', 0, 0, 'Stable', '2025-12-28 10:41:21.331687', 1, 1, 0),
+(15, 10, '{}', 12.5, 0, 'Stable', '2025-12-28 10:49:43.998652', 1, 4, 0),
+(16, 23, '{}', 28.75, 4.6, 'Improving', '2025-12-28 13:02:35.615715', 1, 1, 0),
+(17, 17, '{}', 21.25, 0, 'Stable', '2025-12-31 16:36:01.008454', 3, 1, 0),
+(18, 17, '{\"1\": 28.6, \"2\": 5.9, \"3\": 33.3, \"4\": 10.0, \"5\": 20.0, \"6\": 0.0, \"7\": 41.7, \"8\": 14.3}', 21.25, 0, 'Stable', '2026-01-01 11:24:09.691028', 3, 2, 0),
+(19, 12, '{\"1\": 13.3, \"2\": 27.3, \"3\": 10.0, \"4\": 8.3, \"5\": 12.5, \"6\": 16.7}', 15, 0, 'Stable', '2026-01-01 13:08:06.204561', 3, 3, 0),
+(20, 11, '{\"1\": 6.7, \"2\": 27.3, \"3\": 10.0, \"4\": 16.7, \"5\": 12.5, \"6\": 12.5}', 13.75, -1, 'Declining', '2026-01-01 13:13:29.958719', 3, 3, 0),
+(21, 15, '{\"1\": 20.0, \"2\": 18.2, \"3\": 30.0, \"4\": 16.7, \"5\": 12.5, \"6\": 16.7}', 18.75, 1.5, 'Improving', '2026-01-03 12:38:08.129802', 3, 3, 0),
+(22, 19, '{\"0\": 30.0, \"1\": 10.0, \"2\": 10.0, \"3\": 16.7, \"4\": 28.6, \"5\": 28.6, \"6\": 25.0, \"7\": 16.7, \"8\": 50.0}', 23.75, 0, 'Stable', '2026-01-03 13:52:27.910974', 3, 4, 0),
+(23, 19, '{\"1\": 20.0, \"2\": 25.0, \"3\": 46.2, \"4\": 20.0, \"5\": 7.7, \"6\": 11.1, \"7\": 37.5}', 23.75, 0, 'Stable', '2026-01-04 04:34:23.912379', 4, 1, 0),
+(24, 12, '{}', 15, 0.4, 'Stable', '2026-01-18 11:57:35.495272', 3, 3, 187),
+(25, 10, '{}', 12.5, 0, 'Stable', '2026-01-18 12:30:16.200010', 3, 6, 121),
+(26, 17, '{}', 21.25, 7, 'Improving', '2026-01-18 12:35:46.002527', 3, 6, 246),
+(27, 28, '{}', 35, 9, 'Improving', '2026-01-18 13:12:00.923929', 3, 6, 2421),
+(28, 4, '{}', 5, -0.7, 'Declining', '2026-01-18 13:41:55.599175', 3, 6, 4215),
+(29, 4, '{}', 5, -2.5, 'Declining', '2026-01-18 13:42:58.435732', 3, 6, 4278),
+(30, 4, '{}', 5, -2.66, 'Declining', '2026-01-18 13:48:08.074688', 3, 6, 4588),
+(31, 8, '{}', 10, -2, 'Declining', '2026-01-18 13:55:37.024922', 3, 6, 5037),
+(32, 25, '{}', 31.25, 6, 'Improving', '2026-01-18 14:01:26.822225', 3, 4, 315);
 
 -- --------------------------------------------------------
 
@@ -973,7 +986,7 @@ ALTER TABLE `auth_permission`
 -- AUTO_INCREMENT for table `auth_user`
 --
 ALTER TABLE `auth_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `auth_user_groups`
@@ -1003,13 +1016,13 @@ ALTER TABLE `django_content_type`
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `evaluation_attempt`
 --
 ALTER TABLE `evaluation_attempt`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `evaluation_question`

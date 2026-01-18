@@ -12,6 +12,10 @@
     </style>
 </head>
 <body>
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 5%;">
+    <span style="color:#888;">Evaluation in progress...</span>
+    <a href="{% url 'dashboard' %}" style="color:var(--red); text-decoration:none; font-weight:bold;">✖ Exit to Dashboard</a>
+</div>
     <div class="header">
         <h1>Stage 2: {{ level|upper }} Level Test</h1>
         <p>This test determines your final preparedness for {{ subject.name }}</p>
@@ -31,7 +35,7 @@
             </div>
             {% endfor %}
 
-            <button type="submit" class="btn-final">Finish Assessment & See Results</button>
+            <button type="submit" class="btn-final">Finish Assessment </button>
         </form>
     </div>
 </body>

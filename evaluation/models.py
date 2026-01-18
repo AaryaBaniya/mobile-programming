@@ -14,21 +14,17 @@ class Question(models.Model):
     option_b = models.CharField(max_length=200)
     option_c = models.CharField(max_length=200)
     option_d = models.CharField(max_length=200)
-    correct_option = models.CharField(max_length=1) # A, B, C, or D
+    correct_option = models.CharField(max_length=1)
     difficulty = models.CharField(max_length=10, choices=DIFF_CHOICES)
     is_common = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"U{self.unit_number} | {self.difficulty} | {self.question_text[:30]}"
 
 class Attempt(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    common_score = models.IntegerField()
-    level_score = models.IntegerField()
     total_score = models.IntegerField()
-    unit_breakdown = models.JSONField() 
     preparedness_score = models.FloatField()
-    improvement_rate = models.FloatField(default=0.0)
+    time_taken = models.IntegerField(default=0)  # In Seconds
     trend = models.CharField(max_length=20, default="Stable")
+    improvement_rate = models.FloatField(default=0.0)
+    unit_breakdown = models.JSONField(default=dict)
     timestamp = models.DateTimeField(auto_now_add=True)

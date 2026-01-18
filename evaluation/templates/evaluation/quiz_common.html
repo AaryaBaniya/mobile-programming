@@ -13,6 +13,10 @@
     </style>
 </head>
 <body>
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 5%;">
+    <span style="color:#888;">Evaluation in progress...</span>
+    <a href="{% url 'dashboard' %}" style="color:var(--red); text-decoration:none; font-weight:bold;">✖ Exit to Dashboard</a>
+</div>
     <div class="header">
         <h1>Stage 1: Common Assessment</h1>
         <p>Subject: {{ subject.name }} | Difficulty: Mixed</p>

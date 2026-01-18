@@ -1,34 +1,152 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>BCA Evaluation System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCA Evaluation System | Tribhuvan University</title>
     <style>
-        :root { --green: #2E8B57; --orange: #FF8C00; }
-        body { font-family: 'Segoe UI', sans-serif; margin:0; text-align: center; background: #fcfcfc; }
-        .hero { background: linear-gradient(135deg, var(--green) 0%, #1e5c39 100%); color: white; padding: 120px 20px; }
-        .logo-box { background: var(--orange); display: inline-block; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-bottom: 20px; }
-        .container { max-width: 900px; margin: auto; padding: 60px 20px; }
-        .btn { padding: 18px 45px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; transition: 0.3s; font-size: 1.1rem; }
-        .btn-prime { background: var(--orange); color: white; box-shadow: 0 10px 20px rgba(255,140,0,0.3); }
-        .btn-prime:hover { transform: translateY(-3px); }
-        .step-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 50px; }
-        .step { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-bottom: 5px solid #eee; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        :root { --green: #2E8B57; --orange: #FF8C00; --dark: #2c3e50; --light: #f8f9fa; }
+        
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light); color: var(--dark); overflow-x: hidden; }
+        
+        /* 1. Hero Section */
+        .hero { 
+            background: linear-gradient(135deg, var(--green) 0%, #1e5c39 100%); 
+            color: white; 
+            padding: 100px 5%; 
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
+        }
+        .logo-badge { background: var(--orange); padding: 8px 20px; border-radius: 5px; font-weight: 700; display: inline-block; margin-bottom: 20px; }
+        .hero h1 { font-size: 3.5rem; margin: 0; line-height: 1.2; }
+        .hero p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 20px auto 40px; }
+        
+        .btn-main { 
+            padding: 18px 50px; 
+            background: var(--orange); 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 50px; 
+            font-weight: 700; 
+            font-size: 1.1rem;
+            box-shadow: 0 10px 20px rgba(255,140,0,0.3);
+            transition: 0.3s;
+        }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(255,140,0,0.4); }
+
+        /* 2. System Description (The "About" with Image) */
+        .container { max-width: 1100px; margin: auto; padding: 60px 5%; }
+        
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; margin-top: 40px; }
+        .about-image img { width: 100%; border-radius: 20px; box-shadow: 20px 20px 0 var(--green); }
+        .about-text h2 { color: var(--green); font-size: 2.2rem; }
+        .about-text p { line-height: 1.7; color: #555; font-size: 1.05rem; }
+
+        /* 3. The 3-Step Process */
+        .step-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 80px; }
+        .step-card { 
+            background: white; 
+            padding: 40px 30px; 
+            border-radius: 20px; 
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-bottom: 5px solid transparent;
+            transition: 0.3s;
+        }
+        .step-card:hover { border-bottom: 5px solid var(--orange); transform: translateY(-10px); }
+        .step-card h3 { color: var(--green); margin-bottom: 15px; }
+        .icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
+
+        /* 4. Quick Links / Resources */
+        .resource-section { background: #f0f4f2; padding: 80px 5%; margin-top: 80px; border-radius: 50px 50px 0 0; }
+        .links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
+        .link-item { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            transition: 0.3s;
+            border-left: 5px solid var(--orange);
+        }
+        .link-item:hover { background: var(--green); color: white; transform: translateX(5px); }
+
+        footer { text-align: center; padding: 40px; background: white; color: #888; font-size: 0.9rem; }
     </style>
 </head>
 <body>
-    <div class="hero">
-        <div class="logo-box">BCA SEM VI</div>
-        <h1 style="font-size: 3rem;">Student Preparedness Evaluation</h1>
-        <p style="font-size: 1.2rem; opacity: 0.9;">Analyze your syllabus mastery through tiered testing and progress regression.</p>
-        <br>
-        <a href="{% url 'login' %}" class="btn btn-prime">Sign In to Dashboard</a>
-    </div>
+
+    <!-- HERO SECTION -->
+    <header class="hero">
+        <div class="logo-badge">TRIBHUVAN UNIVERSITY | BCA</div>
+        <h1>Intelligent Student Evaluation <br> & Preparedness Tracker</h1>
+        <p>A specialized platform for 6th Semester students to measure unit-wise syllabus mastery through advanced regression analytics.</p>
+        <a href="{% url 'login' %}" class="btn-main">Get Your Individual Report</a>
+    </header>
+
     <div class="container">
+        <!-- SYSTEM DESCRIPTION SECTION -->
+        <div class="about-grid">
+            <div class="about-image">
+                <!-- Using a high-quality education stock image -->
+                <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=600" alt="Student Analyzing Data">
+            </div>
+            <div class="about-text">
+                <h2>Why use this platform?</h2>
+                <p>Preparing for BCA Finals is challenging. Our system bridges the gap between study and success by providing <b>Evidence-Based Evaluation</b>. </p>
+                <p>Using <b>Numpy-powered Linear Regression</b>, the system compares your current performance with previous attempts to calculate a 'Learning Slope'. It specifically detects units where your accuracy is below 50% and suggests focused revision for the TU Syllabus.</p>
+                <div style="margin-top:20px;">
+                    <span style="background: #e9f5ee; color: var(--green); padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 0.8rem; margin-right:10px;">📈 Regression Model</span>
+                    <span style="background: #fff4e6; color: var(--orange); padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 0.8rem;">🎯 Unit Analytics</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- THE 3 STEP PROCESS -->
         <div class="step-grid">
-            <div class="step"><h3>Diagnostic</h3>Initial 20 questions to find your baseline.</div>
-            <div class="step"><h3>Tiered Quiz</h3>Questions specifically adapted to your level.</div>
-            <div class="step"><h3>Analytics</h3>Numpy-powered regression to show actual growth.</div>
+            <div class="step-card">
+                <span class="icon">🧪</span>
+                <h3>Diagnostic Stage</h3>
+                <p>Take an initial 20 MCQ assessment to identify your current knowledge baseline across all 5 units.</p>
+            </div>
+            <div class="step-card">
+                <span class="icon">⚡</span>
+                <h3>Tiered Challenge</h3>
+                <p>Based on your Stage 1 score, the system assigns you an Easy, Medium, or Hard level quiz for deeper evaluation.</p>
+            </div>
+            <div class="step-card">
+                <span class="icon">📊</span>
+                <h3>Visual Analytics</h3>
+                <p>View your individual progress charts and specific unit-wise weaknesses on your master dashboard.</p>
+            </div>
         </div>
     </div>
+
+    <!-- QUICK LINKS SECTION -->
+    <section class="resource-section">
+        <div class="container" style="padding-top:0;">
+            <h2 style="color: var(--green); text-align: center;">TU BCA Resource Hub</h2>
+            <p style="text-align:center; color:#666;">Quick links to help you navigate your semester effectively.</p>
+            
+            <div class="links-grid">
+                <a href="https://tu.edu.np" target="_blank" class="link-item">Tribhuvan University Official <span>→</span></a>
+                <a href="https://tuiost.edu.np" target="_blank" class="link-item">IOST Result Portal <span>→</span></a>
+                <a href="https://www.facebook.com/groups/BCAStudentsNepal" target="_blank" class="link-item">BCA Nepal Community <span>→</span></a>
+                <a href="http://entrance.tu.edu.np" target="_blank" class="link-item">Exam Forms & Centers <span>→</span></a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 BCA SEM VI Project - Preparedness Evaluation System. <br>
+        Developed for Academic Excellence.
+    </footer>
+
 </body>
 </html>

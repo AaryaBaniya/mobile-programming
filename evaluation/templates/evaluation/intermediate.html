@@ -114,14 +114,15 @@
             <!-- Personalized Guidance Box -->
             <div class="logic-feedback">
                 <strong style="color: var(--green);">Evaluation Insights:</strong><br>
-                {{ msg }}
+                {{ logic_msg }}
             </div>
+   
 
             <!-- Clear Action Buttons -->
             <div class="button-group">
-                <a href="{% url 'preview_answers' subject.id %}" class="btn btn-preview">
-                    🔍 Review Answers
-                </a>
+              <a href="{% url 'preview_answers' subject.id %}?mode=stage1" class="btn btn-preview">
+    🔍 Review Answers
+</a>
                 <a href="{% url 'start_level_test' subject.id next_level %}" class="btn btn-continue">
                     Continue to {{ next_level|upper }} Test →
                 </a>

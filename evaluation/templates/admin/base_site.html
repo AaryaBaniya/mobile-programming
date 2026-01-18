@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+
+{% block title %}BCA Evaluation Backend{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <span style="background: #FF8C00; color:white; padding: 5px 10px; border-radius: 5px; font-size: 1rem; margin-right: 10px;">BCA EVAL</span>
+    <a href="{% url 'admin:index' %}" style="color: #2E8B57;">Syllabus Management System</a>
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+<style>
+    #header { background: #ffffff !important; border-bottom: 5px solid #FF8C00 !important; }
+    .module h2, .module caption, .section h2 { background: #2E8B57 !important; }
+    div.breadcrumbs { background: #e9f5ee !important; color: #333 !important; }
+    .button, input[type=submit] { background: #FF8C00 !important; border-radius: 5px !important; }
+    #content-main { margin-top: 30px; }
+</style>
+{% endblock %}

@@ -27,12 +27,14 @@
     <span class="status-badge">Evaluation Complete</span>
     <h2>Excellent effort, {{ user.username }}!</h2>
     <p>You have finished the tiered assessment for <strong>{{ attempt.subject.name }}</strong>.</p>
-
-    <div class="main-score">
-        {{ attempt.total_score }} <span style="font-size: 1.5rem; color:#ccc;">/ 40</span>
-    </div>
-
+<div class="main-score">
+    {{ attempt.total_score }} <span style="font-size: 1.5rem; color:#ccc;">/ {{ max_possible|default:"60" }}</span>
+</div>
     <div class="stats-grid">
+        <div class="stat-item">
+    <span class="stat-val" style="color:var(--green)">{{ time_str }}</span>
+    <span class="stat-lab">Total Session Duration</span>
+</div>
         <div class="stat-item">
             <span class="stat-val">{{ attempt.preparedness_score }}%</span>
             <span class="stat-lab">Preparedness</span>
@@ -44,7 +46,9 @@
     </div>
 
     <div class="btn-group">
-        <a href="{% url 'preview_answers' attempt.subject.id %}" class="btn btn-preview">📑 Review All Stage Answers</a>
+       <a href="{% url 'preview_answers' attempt.subject.id %}?mode=all" class="btn btn-preview">
+    📑 Review All Stage Answers
+</a>
         <a href="{% url 'dashboard' %}" class="btn btn-dash">Go to Dashboard</a>
     </div>
 </div>

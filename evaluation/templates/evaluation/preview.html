@@ -19,5 +19,13 @@
         </ul>
     </div>
     {% endfor %}
-    <a href="{% url 'intermediate_results' subject.id %}" class="btn">Back to Summary</a>
+    <!-- In preview.html -->
+<div style="margin-bottom: 20px;">
+    {% if mode == 'all' %}
+        <!-- If we are viewing all answers, go back to the browser's last page (the Final Results) -->
+        <a href="javascript:history.back()" style="color: purple; font-weight: bold;">← Back to Final Summary</a>
+    {% else %}
+        <!-- If we are at Stage 1, go back to Intermediate Results -->
+        <a href="{% url 'intermediate_results' subject.id %}" style="color: purple; font-weight: bold;">← Back to Stage 1 Results</a>
+    {% endif %}
 </div>
